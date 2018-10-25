@@ -1,4 +1,4 @@
-package com.github.streamlang.extra.struct;
+package com.github.streamlang.weekdays.extra.struct;
 
 public class Pair<T> {
 	private T left;

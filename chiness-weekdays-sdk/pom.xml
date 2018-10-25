@@ -6,12 +6,20 @@
 	
 	<groupId>com.github.streamlang</groupId>
 	<artifactId>chinese-weekdays-sdk</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
+	<url>https://github.com/StreamLang/chinese-weekdays</url>
 	<properties>
 		<jdk.version>1.8</jdk.version>
 	</properties>
 	
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
 		<dependency>
 			<groupId>commons-io</groupId>

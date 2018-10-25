@@ -1,12 +1,14 @@
-package com.github.streamlang.extra.utils;
+package com.github.streamlang.weekdays.extra.utils;
 
-import com.github.streamlang.extra.common.DefaultConfig;
-import com.github.streamlang.extra.struct.Pair;
+import com.github.streamlang.weekdays.extra.common.DefaultConfig;
+import com.github.streamlang.weekdays.extra.struct.Pair;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
+import java.text.ParseException;
+import java.util.*;
 
 /**
  * 做统计时常用到的日期格式化
@@ -14,6 +16,33 @@ import java.util.Date;
  * @author StreamLang  created at 2018/4/8.
  */
 public class StatsDateUtil {
+	/**
+	 * 涉及到日期的统计常常需要为数据按日期分组，部分分组可能没有数据，分组后丢失了这部分日期。
+	 * 这时就需要先构建一个完整的分组清单
+	 * @param clazz
+	 * @param startTime
+	 * @param endTime
+	 * @param pattern
+	 * @See java.util.Calendar @param calendarField
+	 * @param <T>
+	 * @return
+	 * @throws ParseException
+	 */
+	public static <T> Map<String, List<T>> buildTimeRange(String startTime, String endTime,
+			String pattern, int calendarField) throws ParseException {
+		Map<String,List<T>> timeRangeMap = new HashMap<>();
+		Calendar start = Calendar.getInstance();
+		start.setTime(DateUtils.parseDate(startTime,pattern));
+		Calendar end = Calendar.getInstance();
+		end.setTime(DateUtils.parseDate(endTime,pattern));
+		FastDateFormat timeFormatter = FastDateFormat.getInstance(pattern);
+		while (start.before(end)){
+			timeRangeMap.put(timeFormatter.format(start.getTime()),new ArrayList<>());
+			start.add(calendarField,1);
+		}
+		timeRangeMap.put(endTime,new ArrayList<>());
+		return timeRangeMap;
+	}
 	
 	public static Date getYesterday(Date date) {
 		Calendar calendar = Calendar.getInstance();
@@ -39,6 +68,7 @@ public class StatsDateUtil {
 	
 	/**
 	 * 给出日期、指定偏移年份后获得 起始 终止月份
+	 *
 	 * @param date          截止日期
 	 * @param offsetYears
 	 * @param quarterFormat 季度格式化规则

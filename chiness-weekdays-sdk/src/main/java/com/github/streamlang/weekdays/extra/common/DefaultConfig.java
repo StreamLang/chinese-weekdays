@@ -1,4 +1,4 @@
-package com.github.streamlang.extra.common;
+package com.github.streamlang.weekdays.extra.common;
 
 public interface DefaultConfig {
 	String DEFAULT_QUARTER_FORMAT = "%d%02d";

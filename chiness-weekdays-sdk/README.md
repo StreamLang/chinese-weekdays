@@ -12,3 +12,6 @@
 
 2.WeekdaysUtil提供具体实现方法
 
+###配置文件
+节假日的定义默认由JsonPatternSource读取，配置文件放在resources目录下即可，文件名为 `weekdays_source.json`
+
