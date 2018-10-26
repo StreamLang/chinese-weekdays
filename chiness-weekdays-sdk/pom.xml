@@ -4,13 +4,41 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>9</version>
+	</parent>
+	
 	<groupId>com.github.streamlang</groupId>
 	<artifactId>chinese-weekdays-sdk</artifactId>
 	<version>0.0.1</version>
+	<packaging>jar</packaging>
 	<url>https://github.com/StreamLang/chinese-weekdays</url>
 	<properties>
 		<jdk.version>1.8</jdk.version>
 	</properties>
+	
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<tag>v${project.version}</tag>
+		<url>https://github.com/StreamLang/chinese-weekdays</url>
+		<connection>scm:git:git@github.com:StreamLang/chinese-weekdays.git</connection>
+		<developerConnection>scm:git:git@github.com:StreamLang/chinese-weekdays.git</developerConnection>
+	</scm>
+	<developers>
+		<developer>
+			<name>StreamLang</name>
+			<email>will1severything@foxmail.com</email>
+			<organization>JiangHu</organization>
+		</developer>
+	</developers>
 	
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/junit/junit -->

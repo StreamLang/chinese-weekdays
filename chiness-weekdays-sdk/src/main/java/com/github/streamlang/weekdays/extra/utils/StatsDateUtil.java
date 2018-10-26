@@ -3,6 +3,7 @@ package com.github.streamlang.weekdays.extra.utils;
 import com.github.streamlang.weekdays.extra.common.DefaultConfig;
 import com.github.streamlang.weekdays.extra.struct.Pair;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 
@@ -19,28 +20,29 @@ public class StatsDateUtil {
 	/**
 	 * 涉及到日期的统计常常需要为数据按日期分组，部分分组可能没有数据，分组后丢失了这部分日期。
 	 * 这时就需要先构建一个完整的分组清单
-	 * @param clazz
-	 * @param startTime
-	 * @param endTime
-	 * @param pattern
-	 * @See java.util.Calendar @param calendarField
-	 * @param <T>
+	 *
+	 * @see java.util.Calendar
+	 * @param startTime 起始日期
+	 * @param endTime 截止日期
+	 * @param pattern 日期格式
+	 * @param calendarField 日期间隔单位
+	 * @param <T> 数据实体类定义
 	 * @return
-	 * @throws ParseException
+	 * @throws ParseException 格式化失败
 	 */
 	public static <T> Map<String, List<T>> buildTimeRange(String startTime, String endTime,
-			String pattern, int calendarField) throws ParseException {
-		Map<String,List<T>> timeRangeMap = new HashMap<>();
+	                                                      String pattern, int calendarField) throws ParseException {
+		Map<String, List<T>> timeRangeMap = new HashMap<>();
 		Calendar start = Calendar.getInstance();
-		start.setTime(DateUtils.parseDate(startTime,pattern));
+		start.setTime(DateUtils.parseDate(startTime, pattern));
 		Calendar end = Calendar.getInstance();
-		end.setTime(DateUtils.parseDate(endTime,pattern));
+		end.setTime(DateUtils.parseDate(endTime, pattern));
 		FastDateFormat timeFormatter = FastDateFormat.getInstance(pattern);
-		while (start.before(end)){
-			timeRangeMap.put(timeFormatter.format(start.getTime()),new ArrayList<>());
-			start.add(calendarField,1);
+		while (start.before(end)) {
+			timeRangeMap.put(timeFormatter.format(start.getTime()), new ArrayList<>());
+			start.add(calendarField, 1);
 		}
-		timeRangeMap.put(endTime,new ArrayList<>());
+		timeRangeMap.put(endTime, new ArrayList<>());
 		return timeRangeMap;
 	}
 	
@@ -55,7 +57,7 @@ public class StatsDateUtil {
 	 * 给出日期、指定偏移年份后获得 起始 终止月份
 	 *
 	 * @param date        截止日期
-	 * @param offsetYears
+	 * @param offsetYears 偏移年份
 	 * @param monthFormat 月份格式化规则
 	 * @return
 	 */
@@ -70,7 +72,7 @@ public class StatsDateUtil {
 	 * 给出日期、指定偏移年份后获得 起始 终止月份
 	 *
 	 * @param date          截止日期
-	 * @param offsetYears
+	 * @param offsetYears   偏移年份
 	 * @param quarterFormat 季度格式化规则
 	 * @return
 	 */
