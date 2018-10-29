@@ -9,15 +9,28 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class WeekdaysUtil {
-	
-	public static int countWeekdaysOfMonth(String date, String datePattern) throws ParseException {
+	/**
+	 * 计算指定月份的工作日天数
+	 *
+	 * @param month        日期
+	 * @param monthPattern 日期格式
+	 * @return 天数
+	 * @throws ParseException
+	 */
+	public static int countWeekdaysOfMonth(String month, String monthPattern) throws ParseException {
 		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(DateUtils.parseDate(date, datePattern));
-		int month = calendar.get(Calendar.MONTH) + 1;
+		calendar.setTime(DateUtils.parseDate(month, monthPattern));
+		int monthOfYear = calendar.get(Calendar.MONTH) + 1;
 		int year = calendar.get(Calendar.YEAR);
-		return countWeekdaysOfMonth(year, month);
+		return countWeekdaysOfMonth(year, monthOfYear);
 	}
 	
+	/**
+	 * 计算指定月份的工作日天数
+	 *
+	 * @param date 至少包含年份和月份信息
+	 * @return 天数
+	 */
 	public static int countWeekdaysOfMonth(Date date) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
@@ -26,15 +39,33 @@ public class WeekdaysUtil {
 		return countWeekdaysOfMonth(year, month);
 	}
 	
-	public static List<String> listWeekdaysOfMonth(String date,String datePattern) throws ParseException {
+	/**
+	 * 指定月份的工作日清单
+	 *
+	 * @param month        月份
+	 * @param monthPattern 月份格式
+	 * @param dayPattern   日期格式
+	 * @return
+	 * @throws ParseException
+	 */
+	public static List<String> listWeekdaysOfMonth(String month, String monthPattern, String dayPattern) throws ParseException {
 		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(DateUtils.parseDate(date, datePattern));
-		int month = calendar.get(Calendar.MONTH) + 1;
+		calendar.setTime(DateUtils.parseDate(month, monthPattern));
+		int monthOfYear = calendar.get(Calendar.MONTH) + 1;
 		int year = calendar.get(Calendar.YEAR);
-		return listWeekdaysOfMonth(year, month,datePattern);
+		return listWeekdaysOfMonth(year, monthOfYear, dayPattern);
 	}
-	public static List<String> listWeekdaysOfMonth(int year, int month, String datePattern) {
-		final FastDateFormat formatter = FastDateFormat.getInstance(datePattern);
+	
+	/**
+	 * 指定月份的所有工作日列表
+	 *
+	 * @param year       年
+	 * @param month      月
+	 * @param dayPattern 日-格式
+	 * @return
+	 */
+	public static List<String> listWeekdaysOfMonth(int year, int month, String dayPattern) {
+		final FastDateFormat formatter = FastDateFormat.getInstance(dayPattern);
 		List<String> weekdaysList = new ArrayList<>();
 		listWeekdaysOfMonth(year, month).stream().forEach(date -> {
 			weekdaysList.add(formatter.format(date));
@@ -42,12 +73,12 @@ public class WeekdaysUtil {
 		return weekdaysList;
 	}
 	
-	public static List<Date> listWeekdaysOfMonth(Date date){
+	public static List<Date> listWeekdaysOfMonth(Date date) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		int month = calendar.get(Calendar.MONTH) + 1;
 		int year = calendar.get(Calendar.YEAR);
-		return listWeekdaysOfMonth(year,month);
+		return listWeekdaysOfMonth(year, month);
 	}
 	
 	public static List<Date> listWeekdaysOfMonth(int year, int month) {
@@ -57,8 +88,9 @@ public class WeekdaysUtil {
 		calendar.set(Calendar.DATE, 1);
 		List<Date> weekdays = new ArrayList<>();
 		MonthPattern monthPattern = WeekdaysDataBuilder.getStorage().getPattern(year, month);
-		List<Integer> holidays = monthPattern.getHolidays();
-		boolean nonHoliday = isEmptyCollection(holidays);
+		boolean nonHoliday = monthPattern == null || isEmptyCollection(monthPattern.getHolidays());
+		List<Integer> holidays = nonHoliday ? new ArrayList<>() : monthPattern.getHolidays();
+		//如果有假期则需要额外判断 Mon - Fri是否为假日
 		while (calendar.get(Calendar.YEAR) == year
 				&& calendar.get(Calendar.MONTH) < month) {
 			int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
@@ -75,10 +107,10 @@ public class WeekdaysUtil {
 		}
 		if (monthPattern != null) {
 			List<Integer> shiftDays = monthPattern.getShiftDays();
-			if (!isEmptyCollection(shiftDays)){
-				calendar.set(Calendar.MONTH,month);
-				shiftDays.stream().forEach(shiftDay->{
-					calendar.set(Calendar.DATE,shiftDay);
+			if (!isEmptyCollection(shiftDays)) {
+				calendar.set(Calendar.MONTH, month);
+				shiftDays.stream().forEach(shiftDay -> {
+					calendar.set(Calendar.DATE, shiftDay);
 					weekdays.add(calendar.getTime());
 				});
 			}
