@@ -81,6 +81,33 @@ public class WeekdaysUtil {
 		return listWeekdaysOfMonth(year, month);
 	}
 	
+	public static boolean isWeekday(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		int month = calendar.get(Calendar.MONTH) + 1;
+		int year = calendar.get(Calendar.YEAR);
+		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+		int dayOfMonth = calendar.get(Calendar.DATE);
+		MonthPattern monthPattern = WeekdaysDataBuilder.getStorage().getPattern(year, month);
+		boolean nonHoliday = monthPattern == null || isEmptyCollection(monthPattern.getHolidays());
+		if (!(dayOfWeek == Calendar.SUNDAY || dayOfWeek == Calendar.SATURDAY)) {
+			List<Integer> holidays = nonHoliday ? new ArrayList<>() : monthPattern.getHolidays();
+			if (!nonHoliday) {
+				return holidays.stream().noneMatch(holiday -> holiday == dayOfMonth);
+			} else {
+				return true;
+			}
+		} else {
+			//周六周日需要判断是否调班
+			List<Integer> shiftDays = monthPattern.getShiftDays();
+			if (!isEmptyCollection(shiftDays)) {
+				return shiftDays.stream().anyMatch(shiftDay -> shiftDay==dayOfMonth);
+			} else {
+				return false;
+			}
+		}
+	}
+	
 	public static List<Date> listWeekdaysOfMonth(int year, int month) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.YEAR, year);
